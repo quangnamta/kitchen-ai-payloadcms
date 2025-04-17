@@ -4,7 +4,6 @@ export const FoodAddOns: CollectionConfig = {
   slug: 'food-add-ons',
   admin: {
     useAsTitle: 'name',
-    hidden: true,
   },
   fields: [
     {
