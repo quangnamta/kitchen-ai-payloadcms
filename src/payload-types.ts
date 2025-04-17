@@ -69,14 +69,29 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    foods: Food;
+    'food-add-ons': FoodAddOn;
+    'food-categories': FoodCategory;
+    carts: Cart;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
-  collectionsJoins: {};
+  collectionsJoins: {
+    foods: {
+      relatedFoodAddOns: 'food-add-ons';
+    };
+    'food-categories': {
+      relatedFoods: 'foods';
+    };
+  };
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    foods: FoodsSelect<false> | FoodsSelect<true>;
+    'food-add-ons': FoodAddOnsSelect<false> | FoodAddOnsSelect<true>;
+    'food-categories': FoodCategoriesSelect<false> | FoodCategoriesSelect<true>;
+    carts: CartsSelect<false> | CartsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -86,7 +101,7 @@ export interface Config {
   };
   globals: {};
   globalsSelect: {};
-  locale: null;
+  locale: 'en' | 'vi';
   user: User & {
     collection: 'users';
   };
@@ -151,6 +166,90 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "foods".
+ */
+export interface Food {
+  id: string;
+  name: string;
+  price: number;
+  shortDescription?: string | null;
+  nutritionalValue?:
+    | {
+        label: string;
+        value: string;
+        id?: string | null;
+      }[]
+    | null;
+  relatedFoodAddOns?: {
+    docs?: (string | FoodAddOn)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  category?: (string | null) | FoodCategory;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "food-add-ons".
+ */
+export interface FoodAddOn {
+  id: string;
+  name: string;
+  price: number;
+  product: string | Food;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "food-categories".
+ */
+export interface FoodCategory {
+  id: string;
+  name: string;
+  relatedFoods?: {
+    docs?: (string | Food)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  parent?: (string | null) | FoodCategory;
+  breadcrumbs?:
+    | {
+        doc?: (string | null) | FoodCategory;
+        url?: string | null;
+        label?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "carts".
+ */
+export interface Cart {
+  id: string;
+  cartItems?:
+    | {
+        food: string | Food;
+        addOns?: (string | FoodAddOn)[] | null;
+        quantity: number;
+        price: number;
+        id?: string | null;
+      }[]
+    | null;
+  shippingInfo: {
+    receiverName: string;
+    address: string;
+    shippingTime?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -163,6 +262,22 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: string | Media;
+      } | null)
+    | ({
+        relationTo: 'foods';
+        value: string | Food;
+      } | null)
+    | ({
+        relationTo: 'food-add-ons';
+        value: string | FoodAddOn;
+      } | null)
+    | ({
+        relationTo: 'food-categories';
+        value: string | FoodCategory;
+      } | null)
+    | ({
+        relationTo: 'carts';
+        value: string | Cart;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -238,6 +353,80 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "foods_select".
+ */
+export interface FoodsSelect<T extends boolean = true> {
+  name?: T;
+  price?: T;
+  shortDescription?: T;
+  nutritionalValue?:
+    | T
+    | {
+        label?: T;
+        value?: T;
+        id?: T;
+      };
+  relatedFoodAddOns?: T;
+  category?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "food-add-ons_select".
+ */
+export interface FoodAddOnsSelect<T extends boolean = true> {
+  name?: T;
+  price?: T;
+  product?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "food-categories_select".
+ */
+export interface FoodCategoriesSelect<T extends boolean = true> {
+  name?: T;
+  relatedFoods?: T;
+  parent?: T;
+  breadcrumbs?:
+    | T
+    | {
+        doc?: T;
+        url?: T;
+        label?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "carts_select".
+ */
+export interface CartsSelect<T extends boolean = true> {
+  cartItems?:
+    | T
+    | {
+        food?: T;
+        addOns?: T;
+        quantity?: T;
+        price?: T;
+        id?: T;
+      };
+  shippingInfo?:
+    | T
+    | {
+        receiverName?: T;
+        address?: T;
+        shippingTime?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
