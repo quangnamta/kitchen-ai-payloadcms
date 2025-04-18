@@ -32,6 +32,7 @@ export const Foods: CollectionConfig = {
           name: 'images',
           type: 'upload',
           relationTo: 'media',
+          hasMany: true,
         },
         {
           name: 'shortDescription',

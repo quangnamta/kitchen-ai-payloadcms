@@ -172,7 +172,7 @@ export interface Food {
   id: string;
   name: string;
   price: number;
-  images?: (string | null) | Media;
+  images?: (string | Media)[] | null;
   shortDescription?: string | null;
   nutritionalValue?:
     | {
