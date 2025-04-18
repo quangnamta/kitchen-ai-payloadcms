@@ -67,7 +67,7 @@ export const Foods: CollectionConfig = {
           name: 'relatedFoodAddOns',
           type: 'join',
           collection: 'food-add-ons',
-          on: 'product',
+          on: 'food',
           admin: {
             allowCreate: true,
           },

@@ -198,7 +198,7 @@ export interface FoodAddOn {
   id: string;
   name: string;
   price: number;
-  product: string | Food;
+  food: string | Food;
   updatedAt: string;
   createdAt: string;
 }
@@ -383,7 +383,7 @@ export interface FoodsSelect<T extends boolean = true> {
 export interface FoodAddOnsSelect<T extends boolean = true> {
   name?: T;
   price?: T;
-  product?: T;
+  food?: T;
   updatedAt?: T;
   createdAt?: T;
 }

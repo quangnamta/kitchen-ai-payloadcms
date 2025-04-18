@@ -33,7 +33,7 @@ export const FoodAddOns: CollectionConfig = {
       type: 'collapsible',
       fields: [
         {
-          name: 'product',
+          name: 'food',
           type: 'relationship',
           relationTo: 'foods',
           required: true,
