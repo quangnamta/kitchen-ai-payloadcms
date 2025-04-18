@@ -1,6 +1,7 @@
 import type { CollectionConfig } from 'payload'
 
 // Need an ondelete cascade on foodAddOns
+// Delete image
 export const Foods: CollectionConfig = {
   slug: 'foods',
   admin: {
@@ -26,6 +27,11 @@ export const Foods: CollectionConfig = {
               required: true,
             },
           ],
+        },
+        {
+          name: 'images',
+          type: 'upload',
+          relationTo: 'media',
         },
         {
           name: 'shortDescription',

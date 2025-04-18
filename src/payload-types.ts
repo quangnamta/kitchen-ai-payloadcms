@@ -172,6 +172,7 @@ export interface Food {
   id: string;
   name: string;
   price: number;
+  images?: (string | null) | Media;
   shortDescription?: string | null;
   nutritionalValue?:
     | {
@@ -361,6 +362,7 @@ export interface MediaSelect<T extends boolean = true> {
 export interface FoodsSelect<T extends boolean = true> {
   name?: T;
   price?: T;
+  images?: T;
   shortDescription?: T;
   nutritionalValue?:
     | T
