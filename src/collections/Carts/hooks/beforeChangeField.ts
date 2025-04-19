@@ -6,16 +6,17 @@ type SiblingDataType = NonNullable<Cart['cartItems']>[number]
 export const changingFoodPriceHook: FieldHook<Cart, number, SiblingDataType> = async ({
   value,
   siblingData,
+  data,
   req: { payload },
 }) => {
-  if (value == undefined) {
-    const foodData = await payload.findByID({
-      collection: 'foods',
-      id: siblingData.food as string,
-    })
-    return foodData.price
+  if (value && data?.isLocked == 'yes') {
+    return value
   }
-  return value
+  const foodData = await payload.findByID({
+    collection: 'foods',
+    id: siblingData.food as string,
+  })
+  return foodData.price
 }
 
 export const changingAddOnsPriceHook: FieldHook<Cart, number, SiblingDataType> = async ({
