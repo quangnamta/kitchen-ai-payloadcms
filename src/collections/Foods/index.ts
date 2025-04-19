@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { deleteImagesHook, deleteAddOnsHook } from './hooks/beforeDelete'
 
 // Need an ondelete cascade on foodAddOns
 // Delete image
@@ -6,6 +7,9 @@ export const Foods: CollectionConfig = {
   slug: 'foods',
   admin: {
     useAsTitle: 'name',
+  },
+  hooks: {
+    beforeDelete: [deleteImagesHook, deleteAddOnsHook],
   },
   fields: [
     {

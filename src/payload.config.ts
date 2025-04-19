@@ -15,6 +15,7 @@ import { Foods } from './collections/Foods'
 import { FoodAddOns } from './collections/FoodAddOns'
 import { FoodCategories } from './collections/FoodCategories'
 import { Carts } from './collections/Carts'
+import { FoodAddOnsCategories } from './collections/FoodAddOnsCategories'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -26,7 +27,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, Foods, FoodAddOns, FoodCategories, Carts],
+  collections: [Users, Media, Foods, FoodCategories, FoodAddOns, FoodAddOnsCategories, Carts],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

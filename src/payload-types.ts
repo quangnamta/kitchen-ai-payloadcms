@@ -70,8 +70,9 @@ export interface Config {
     users: User;
     media: Media;
     foods: Food;
-    'food-add-ons': FoodAddOn;
     'food-categories': FoodCategory;
+    'food-add-ons': FoodAddOn;
+    'food-add-ons-categories': FoodAddOnsCategory;
     carts: Cart;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -89,8 +90,9 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     foods: FoodsSelect<false> | FoodsSelect<true>;
-    'food-add-ons': FoodAddOnsSelect<false> | FoodAddOnsSelect<true>;
     'food-categories': FoodCategoriesSelect<false> | FoodCategoriesSelect<true>;
+    'food-add-ons': FoodAddOnsSelect<false> | FoodAddOnsSelect<true>;
+    'food-add-ons-categories': FoodAddOnsCategoriesSelect<false> | FoodAddOnsCategoriesSelect<true>;
     carts: CartsSelect<false> | CartsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -198,7 +200,19 @@ export interface FoodAddOn {
   id: string;
   name: string;
   price: number;
+  category: string | FoodAddOnsCategory;
   food: string | Food;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "food-add-ons-categories".
+ */
+export interface FoodAddOnsCategory {
+  id: string;
+  name: string;
+  choiceLimit: number;
   updatedAt: string;
   createdAt: string;
 }
@@ -232,15 +246,21 @@ export interface FoodCategory {
  */
 export interface Cart {
   id: string;
+  isLocked?: ('yes' | 'no') | null;
+  status?: ('processing' | 'paid' | 'delivered' | 'canceled') | null;
   cartItems?:
     | {
         food: string | Food;
+        foodPrice: number;
         addOns?: (string | FoodAddOn)[] | null;
+        addOnsPrice: number;
         quantity: number;
-        price: number;
+        subTotal?: number | null;
         id?: string | null;
       }[]
     | null;
+  discount: number;
+  grandTotal?: number | null;
   shippingInfo: {
     receiverName: string;
     address: string;
@@ -269,12 +289,16 @@ export interface PayloadLockedDocument {
         value: string | Food;
       } | null)
     | ({
+        relationTo: 'food-categories';
+        value: string | FoodCategory;
+      } | null)
+    | ({
         relationTo: 'food-add-ons';
         value: string | FoodAddOn;
       } | null)
     | ({
-        relationTo: 'food-categories';
-        value: string | FoodCategory;
+        relationTo: 'food-add-ons-categories';
+        value: string | FoodAddOnsCategory;
       } | null)
     | ({
         relationTo: 'carts';
@@ -378,17 +402,6 @@ export interface FoodsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "food-add-ons_select".
- */
-export interface FoodAddOnsSelect<T extends boolean = true> {
-  name?: T;
-  price?: T;
-  food?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "food-categories_select".
  */
 export interface FoodCategoriesSelect<T extends boolean = true> {
@@ -408,18 +421,46 @@ export interface FoodCategoriesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "food-add-ons_select".
+ */
+export interface FoodAddOnsSelect<T extends boolean = true> {
+  name?: T;
+  price?: T;
+  category?: T;
+  food?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "food-add-ons-categories_select".
+ */
+export interface FoodAddOnsCategoriesSelect<T extends boolean = true> {
+  name?: T;
+  choiceLimit?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "carts_select".
  */
 export interface CartsSelect<T extends boolean = true> {
+  isLocked?: T;
+  status?: T;
   cartItems?:
     | T
     | {
         food?: T;
+        foodPrice?: T;
         addOns?: T;
+        addOnsPrice?: T;
         quantity?: T;
-        price?: T;
+        subTotal?: T;
         id?: T;
       };
+  discount?: T;
+  grandTotal?: T;
   shippingInfo?:
     | T
     | {
